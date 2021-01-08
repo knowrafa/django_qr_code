@@ -36,8 +36,12 @@ class QrCodeView(APIView):
             # Retornando para a view
             print(fs.path(name=filename))
             print(fs.url(name=filename))
-            ManageQrCode.cut_region(pdf_archive=fs.path(name=filename))
+            decoded_text = ManageQrCode(pdf_path=fs.path(name=filename))
+            decoded_text = decoded_text.get_decoded_text()
 
-            return Response({'uploaded_file_url': uploaded_file_url}, status=status.HTTP_200_OK)
+            payload = {'uploaded_file_url': uploaded_file_url}
+            if decoded_text is not None:
+                payload['decoded_text'] = decoded_text
+            return Response(payload, status=status.HTTP_200_OK)
 
         return Response({}, status=status.HTTP_400_BAD_REQUEST)

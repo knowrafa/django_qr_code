@@ -6,23 +6,25 @@ import numpy as np
 import os
 
 
-class ManageQrCode():
+class ManageQrCode:
+    images_path = None
+    decoded_text = None
 
-    def cut_region(pdf_archive):
-        """
-        Recebe um arquivo pdf para poder cortar (link para o arquivo
-        :param pdf_archive: link para o arquivo enviado em /media/
-        :return: novo arquivo pdf com a região cortada
-        """
+    def __init__(self, pdf_path):
+        reader = PdfFileReader(pdf_path, 'rb')
+        self.images_path = pdf_path.split(".")[0]
 
-        reader = PdfFileReader(pdf_archive, 'rb')
-        output = PdfFileWriter()
+        page = self.cut_region(reader)
+        path_to_pdf = self.save_cropped_pdf(page)
+        image = self.pdf_to_image(path_to_pdf)
+        image = self.threshold(image)
+        print(self.find_qrcode(image))
+
+    def cut_region(self, reader):
 
         # Pegando a primeira página do pdf
-
         page = reader.getPage(0)
         pdf_size = page.mediaBox
-
         page.mediaBox.upperRight = (page.mediaBox.getUpperRight_x(), page.mediaBox.getUpperRight_y())
 
         # Quero entender como essa magia funciona
@@ -31,61 +33,72 @@ class ManageQrCode():
 
         page.mediaBox.lowerLeft = (page.mediaBox.getLowerLeft_x() + value_b, page.mediaBox.getLowerLeft_y() + value)
         # page.cropBox.upperLeft = (400,400)
+        return page
 
+    def save_cropped_pdf(self, page):
         writer = PdfFileWriter()
         writer.addPage(page)
 
-        with open('out_file.pdf', 'wb') as outfp:
-            writer.write(outfp)
+        os.mkdir(self.images_path)
 
-        print(os.path.join(settings.BASE_DIR, 'venv', 'poppler-0.68.0', 'bin'))
-        pdf_image = convert_from_path('out_file.pdf', poppler_path=os.path.join(settings.BASE_DIR, 'venv', 'poppler-0.68.0', 'bin'), dpi=600)
+        cropped_pdf_path = os.path.join(self.images_path, 'cropped_pdf.pdf')
+        with open(cropped_pdf_path, 'wb') as cropped_pdf:
+            writer.write(cropped_pdf)
+        return cropped_pdf_path
+
+    def pdf_to_image(self, path_to_pdf):
+        pdf_image = convert_from_path(path_to_pdf, poppler_path=os.path.join(settings.BASE_DIR, 'venv', 'poppler-0.68.0', 'bin'), dpi=600)
 
         # !TODO Ver como não salvar a imagem e pegar o array dela para continuar o tratamento
+        converted_image_path = os.path.join(self.images_path, 'converted_image.png')
         for image in pdf_image:
-            image.save("converted_image.jpg", "JPEG")
+            image.save(converted_image_path)
+        image = cv2.imread(converted_image_path, cv2.IMREAD_COLOR)
+        return image
 
+    def threshold(self, image):
         # !TODO Verificar se o opencv 4.5.1 precisa de cv2.IMREAD_COLOR
-        image = cv2.imread("converted_image.jpg", cv2.IMREAD_COLOR)
-        image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2GRAY)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         image = cv2.UMat(image)
-
-        # Continuar com OTSU
         _, image = cv2.threshold(image, 127, 255, cv2.THRESH_OTSU)
 
-        # Salvando sample !TODO criar pasta samples
-        cv2.imwrite("converted_image_otsu.jpg", image)
+        converted_otsu_image_path = os.path.join(self.images_path, 'converted_otsu_image.png')
+        cv2.imwrite(converted_otsu_image_path, image)
 
-        # Função nativa
+        return image.get()
+
+    def find_qrcode(self, image):
         detector = cv2.QRCodeDetector()
-
-        # Transformando o cv:Mat para um array (para desenhar as linhas)
-        # O QRCodeDetector funciona com cv:UMat
-        image = image.get()
         decoded_text, points, _ = detector.detectAndDecode(image)
 
         if points is not None:
-        # QR Code detected handling code
-
+            # QR Code detected handling code
             # points é uma tupla de (1,4,2) e precisa ser acessado a partir do primeiro objeto dela, por isso points[0]
-
             points = points[0]
             number_of_points = len(points)
 
             # Mudando cor apenas para pintar (luxo)
             image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+
             for i in range(number_of_points):
                 next_point_i = (i + 1) % number_of_points
+                shift = (5, 5)
                 cv2.line(image, tuple(points[i]), tuple(points[next_point_i]), (255, 0, 0), 5)
 
-            # Voltando para UMat, pois só salva assim
+            # Voltando para UMat, pois só salva assim nessa versão
             image = cv2.UMat(image)
-            print(decoded_text)
-            cv2.imwrite("image_qrcode.jpg", image)
+            # print(decoded_text)
+            qrcode_image_path = os.path.join(self.images_path, "qrcode_image.jpg")
+            cv2.imwrite(qrcode_image_path, image)
+            self.decoded_text = decoded_text
+            return decoded_text
 
-        else:
-            print("QR code not detected")
+        return None
 
-        # page.cropBox.setLowerLeft((42, 115))
-        # page.cropBox.setUpperRight((500, 245))
-        # writer.addPage(page)
+    def get_decoded_text(self):
+        return self.decoded_text
+
+    def get_images_path(self):
+        return self.images_path
+
+# ManageQrCode("../media/Evolução Assinada.pdf")

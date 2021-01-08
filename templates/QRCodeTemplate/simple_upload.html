@@ -46,6 +46,15 @@
       {% if uploaded_file_url %}
         <p>File uploaded at: <a href="{{ uploaded_file_url }}">{{ uploaded_file_url }}</a></p>
       {% endif %}
+      
+      {% if decoded_text is not None %}
+      <div class="inner">
+        <h3>Seu QR Code é: {{decoded_text}}</h3>
+      </div>
+      {% endif %}
+      <div class="inner">
+        
+      </div>
     </main>
 
     <footer class="mastfoot mt-auto">
