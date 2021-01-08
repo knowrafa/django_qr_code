@@ -30,6 +30,7 @@ class QrCodeView(APIView):
             myfile = request.FILES['myfile']
             fs = FileSystemStorage()
             # Salvou em '/media/' o arquivo enviado por upload (com o nome .name e o arquivo myfile)
+            myfile.name = myfile.name.replace(" ", "_")
             filename = fs.save(myfile.name, myfile)
             # Obtendo o link para o arquivo em /media/
             uploaded_file_url = fs.url(filename)

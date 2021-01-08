@@ -51,9 +51,17 @@ class ManageQrCode:
 
         # !TODO Ver como não salvar a imagem e pegar o array dela para continuar o tratamento
         converted_image_path = os.path.join(self.images_path, 'converted_image.png')
+
         for image in pdf_image:
             image.save(converted_image_path)
-        image = cv2.imread(converted_image_path, cv2.IMREAD_COLOR)
+
+        # converted_image_path = converted_image_path.split('media')[1]
+        converted_image_path = os.path.abspath(converted_image_path)
+        dir_name = os.path.split(self.images_path)[1]
+        file_name = os.path.split(converted_image_path)[1]
+        # image = cv2.imread(os.path.join('media', , converted_image_path), cv2.IMREAD_COLOR)
+        image = cv2.imread("media/" + dir_name + "/" + file_name, cv2.IMREAD_COLOR)
+
         return image
 
     def threshold(self, image):
