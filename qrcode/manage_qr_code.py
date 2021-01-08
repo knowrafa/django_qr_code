@@ -2,6 +2,7 @@ from PyPDF2 import PdfFileReader, PdfFileWriter
 from pdf2image import convert_from_path, convert_from_bytes
 from django.conf import settings
 import cv2
+import pyzbar.pyzbar as pyzbar
 import numpy as np
 import os
 
@@ -38,23 +39,35 @@ class ManageQrCode():
         with open('out_file.pdf', 'wb') as outfp:
             writer.write(outfp)
 
-        print(os.path.join(settings.BASE_DIR, 'venv', 'poppler-0.68.0', 'bin'))
-        pdf_image = convert_from_path('out_file.pdf', poppler_path=os.path.join(settings.BASE_DIR, 'venv', 'poppler-0.68.0', 'bin'), dpi=600)
+        # print(os.path.join(settings.BASE_DIR, 'venv', 'poppler-0.68.0', 'bin'))
+        # pdf_image = convert_from_path('out_file.pdf', poppler_path=os.path.join(settings.BASE_DIR, 'venv', 'poppler-0.68.0', 'bin'), dpi=600)
+        pdf_image = convert_from_path('out_file.pdf', poppler_path=os.path.join('..', 'venv', 'poppler-0.68.0', 'bin'),
+                                      dpi=1000)
 
         # !TODO Ver como não salvar a imagem e pegar o array dela para continuar o tratamento
         for image in pdf_image:
             image.save("converted_image.jpg", "JPEG")
 
         # !TODO Verificar se o opencv 4.5.1 precisa de cv2.IMREAD_COLOR
+        # image = cv2.UMat(image)
+
+        kernel =  cv2.getStructuringElement(cv2.MORPH_CROSS, (5,5))
+        # kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 1))
+
         image = cv2.imread("converted_image.jpg", cv2.IMREAD_COLOR)
-        image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2GRAY)
+
+
+        # image = cv2.GaussianBlur(image, (5, 5), 0)
+        #sharpen_kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])
+        #image = cv2.filter2D(image, -1, sharpen_kernel)
+        image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+        for i in range(0, 1):
+            image = cv2.medianBlur(image, 5)
+            _, image = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY)
+
+        # image = cv2.bilateralFilter(image, 9, 75, 75)
+        cv2.imwrite("blurred_image.jpg", image)
         image = cv2.UMat(image)
-
-        # Continuar com OTSU
-        _, image = cv2.threshold(image, 127, 255, cv2.THRESH_OTSU)
-
-        # Salvando sample !TODO criar pasta samples
-        cv2.imwrite("converted_image_otsu.jpg", image)
 
         # Função nativa
         detector = cv2.QRCodeDetector()
@@ -62,30 +75,14 @@ class ManageQrCode():
         # Transformando o cv:Mat para um array (para desenhar as linhas)
         # O QRCodeDetector funciona com cv:UMat
         image = image.get()
-        decoded_text, points, _ = detector.detectAndDecode(image)
 
-        if points is not None:
-        # QR Code detected handling code
 
-            # points é uma tupla de (1,4,2) e precisa ser acessado a partir do primeiro objeto dela, por isso points[0]
+        decodedObjects = pyzbar.decode(image)
+        for obj in decodedObjects:
+            print('Type : ', obj.type)
+            print('Data : ', obj.data, '\n')
 
-            points = points[0]
-            number_of_points = len(points)
+        print(decodedObjects)
 
-            # Mudando cor apenas para pintar (luxo)
-            image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
-            for i in range(number_of_points):
-                next_point_i = (i + 1) % number_of_points
-                cv2.line(image, tuple(points[i]), tuple(points[next_point_i]), (255, 0, 0), 5)
-
-            # Voltando para UMat, pois só salva assim
-            image = cv2.UMat(image)
-            print(decoded_text)
-            cv2.imwrite("image_qrcode.jpg", image)
-
-        else:
-            print("QR code not detected")
-
-        # page.cropBox.setLowerLeft((42, 115))
-        # page.cropBox.setUpperRight((500, 245))
-        # writer.addPage(page)
+# os.path
+ManageQrCode.cut_region("C:\\Users\\Rafael\\Downloads\\201212173714.pdf")
