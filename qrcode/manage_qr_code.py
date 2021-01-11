@@ -109,10 +109,19 @@ class ManageQrCode:
         for obj in decoded_objects:
             print('Type : ', obj.type)
             print('Data : ', obj.data, '\n')
+            print(obj)
+            (x, y, w, h) = obj.rect
+            shift = 5
+            roi = image[y-shift:y+h+shift, x-shift:x+w+shift]
+            file_name = 'qr_code_detected.png'
+            # cv2.rectangle(image, (x, y), (x + w, y + h), (0, 0, 255), 2)
+            qr_code_image_path = os.path.join(self.images_path, file_name)
+            image4save = Image.fromarray(roi)
+            image4save.save(qr_code_image_path)
 
         if decoded_objects:
-            self.decoded_text = decoded_objects[0].data
-            return decoded_objects[0].data
+            self.decoded_text = decoded_objects[0].data.decode("utf-8")
+            return self.decoded_text
         else:
             # qr_code_detector = cv2.QRCodeDetector()
             # decoded_text, points, _ = qr_code_detector.detectAndDecode(image)

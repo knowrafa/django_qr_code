@@ -12,6 +12,7 @@ from rest_framework.parsers import FileUploadParser
 # For managing qrcode
 from .manage_qr_code import ManageQrCode
 
+import base64
 # Create your views here.
 
 
@@ -43,8 +44,13 @@ class QrCodeView(APIView):
             decoded_text = qr_code.get_decoded_text()
 
             payload = {'uploaded_file_url': uploaded_file_url}
+
             if decoded_text is not None:
                 payload['decoded_text'] = decoded_text
+                with open(fs.path(name=filename).split('.pdf')[0] + '\\qr_code_detected.png', "rb") as image_file:
+                    image_data = base64.b64encode(image_file.read()).decode('utf-8')
+                    payload["image"] = image_data
+
             return Response(payload, status=status.HTTP_200_OK)
 
         return Response({}, status=status.HTTP_400_BAD_REQUEST)

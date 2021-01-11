@@ -28,12 +28,12 @@
     <header class="masthead mb-auto">
       <div class="inner">
         <h3 class="masthead-brand">QR CODE</h3>
-       <!--
+       
         <nav class="nav nav-masthead justify-content-center">
-          <a class="nav-link active" href="#">QR CODE</a>
-          <a class="nav-link" href="#">QR CODE 1</a>
-          <a class="nav-link" href="#">QR CODE 2</a>
-       -->
+          <a class="nav-link active" href="#">Aba 1</a>
+          <a class="nav-link" href="#">Aba 2</a>
+          <a class="nav-link" href="#">Aba 3</a>
+       
         </nav>
       </div>
     </header>
@@ -51,9 +51,11 @@
       
       {% if decoded_text is not None %}
       <div class="inner">
-        <h3>Seu QR Code é: {{decoded_text}}</h3>
+          <p>Seu QR Code é: {{decoded_text}}</p>
+          <img src="data:image/png;base64, {{image}}" alt="Red dot" width="200" height="220" />
       </div>
       {% endif %}
+
       <div class="inner">
         
       </div>
