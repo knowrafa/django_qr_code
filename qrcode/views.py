@@ -30,14 +30,21 @@ class QrCodeView(APIView):
             myfile = request.FILES['myfile']
             fs = FileSystemStorage()
             # Salvou em '/media/' o arquivo enviado por upload (com o nome .name e o arquivo myfile)
+            myfile.name = myfile.name.replace(" ", "_")
             filename = fs.save(myfile.name, myfile)
             # Obtendo o link para o arquivo em /media/
             uploaded_file_url = fs.url(filename)
             # Retornando para a view
             print(fs.path(name=filename))
             print(fs.url(name=filename))
-            ManageQrCode.cut_region(pdf_archive=fs.path(name=filename))
+            qr_code = ManageQrCode(pdf_path=fs.path(name=filename))
+            if qr_code.get_decoded_text() is None:
+                qr_code = ManageQrCode(pdf_path=fs.path(name=filename), side='left')
+            decoded_text = qr_code.get_decoded_text()
 
-            return Response({'uploaded_file_url': uploaded_file_url}, status=status.HTTP_200_OK)
+            payload = {'uploaded_file_url': uploaded_file_url}
+            if decoded_text is not None:
+                payload['decoded_text'] = decoded_text
+            return Response(payload, status=status.HTTP_200_OK)
 
         return Response({}, status=status.HTTP_400_BAD_REQUEST)
