@@ -38,6 +38,8 @@ class QrCodeView(APIView):
             print(fs.path(name=filename))
             print(fs.url(name=filename))
             qr_code = ManageQrCode(pdf_path=fs.path(name=filename))
+            if qr_code.get_decoded_text() is None:
+                qr_code = ManageQrCode(pdf_path=fs.path(name=filename), side='left')
             decoded_text = qr_code.get_decoded_text()
 
             payload = {'uploaded_file_url': uploaded_file_url}
