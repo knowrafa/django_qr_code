@@ -23,18 +23,17 @@ class ManageQrCode:
     half_image = None
     cropped_pdf = None
 
-    # 94% DE acurácia com essas configurações
+    # 97% DE acurácia com essas configurações
     rotate = [False, True]
     degrees = [0, 1, 2, 358, 359]
-    sides = ['right', 'left', 'half']
-    region_to_cut = [8, 6]
+    sides = ['left', 'half', 'right']
+    region_to_cut = [8]
 
     # Configs for testing
     # rotate = [False]
     # degrees = [0, 2, 358]
     # sides = ['right']
     # region_to_cut = [8]
-
     # 'right', 9, False
 
     def __init__(self, pdf_path):
@@ -54,7 +53,7 @@ class ManageQrCode:
                     print(side, self.degrees, region, "rotated" if rotate else "not rotated")
                     self.reader = None
                     try:
-                        self.reader = PdfFileReader(pdf_file)
+                        self.reader = PdfFileReader(self.pdf_path)
                     except PyPdfError:
                         print("PDF INVÁLIDO!")
                         with open(self.images_path + "\\..\\" + "corrupted_log.txt", "a") as corrupted_log:
@@ -137,8 +136,10 @@ class ManageQrCode:
         self.cropped_pdf = cropped_pdf_path
 
     def pdf_to_image(self):
+        # pdf_image = convert_from_path(self.cropped_pdf, poppler_path=os.path.join(
+        #     '..', 'venv', 'poppler-0.68.0', 'bin'), dpi=1000)
         pdf_image = convert_from_path(self.cropped_pdf, poppler_path=os.path.join(
-            '..', 'venv', 'poppler-0.68.0', 'bin'), dpi=1000)
+            settings.BASE_DIR, 'venv', 'poppler-0.68.0', 'bin'), dpi=1000)
 
         self.image = cv2.UMat(np.asarray(pdf_image.pop()))
         self.image = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
@@ -244,7 +245,7 @@ class ManageQrCode:
     def get_images_path(self):
         return self.images_path
 
-
+'''
 # found = 0
 # not_found = 0
 path = ("C:\\Users\\Rafael\\Documents\\PDF_QRCODE\\enviados\\")
@@ -288,7 +289,7 @@ for pdf_file in filtered_files:
 print(f"ACURÁCIA: {found*100/(found+not_found)}")
 with open(path + "\\" + "log.txt", "a") as file:
     file.write(f"ACURÁCIA: {found*100/(found+not_found)}")
-
+'''
 
 '''
 file1 = open("C:\\Users\\Rafael\\Documents\\PDF_QRCODE\\enviados\\log_failed.txt", 'r')
