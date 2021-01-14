@@ -21,8 +21,7 @@ class ManageQrCode:
     page = None
     image = None
     half_image = None
-    cropped_pdf = None
-    bytes_pdf = None
+    cropped_bytes_pdf = None
 
     # 97% DE acurácia com essas configurações
     rotate = [False, True]
@@ -63,7 +62,7 @@ class ManageQrCode:
                         raise PyPdfError
 
                     self.cut_region(side=side, rotate=rotate, region=region)
-                    self.save_cropped_pdf()
+                    self.save_cropped_bytes_pdf()
                     self.pdf_to_image()
 
                     for degree in self.degrees:
@@ -128,18 +127,20 @@ class ManageQrCode:
         # return page
         self.page = page
 
-    def save_cropped_pdf(self):
+    def save_cropped_bytes_pdf(self):
         writer = PdfFileWriter()
-        self.bytes_pdf = io.BytesIO()
+        self.cropped_bytes_pdf = io.BytesIO()
         writer.addPage(self.page)
-        writer.write(self.bytes_pdf)
-        self.bytes_pdf.seek(0)
+        writer.write(self.cropped_bytes_pdf)
+        # Quesito de configuração, volta o io para o começo
+        self.cropped_bytes_pdf.seek(0)
+        self.cropped_bytes_pdf = self.cropped_bytes_pdf.read()
 
     def pdf_to_image(self):
         # pdf_image = convert_from_path(self.cropped_pdf, poppler_path=os.path.join(
         #     settings.BASE_DIR if settings.configured else '..',
         #     'venv', 'poppler-0.68.0', 'bin'), dpi=1000)
-        pdf_image = convert_from_bytes(self.bytes_pdf.read(), poppler_path=os.path.join('..', 'venv', 'poppler-0.68.0', 'bin'), dpi=1000)
+        pdf_image = convert_from_bytes(self.cropped_bytes_pdf, poppler_path=os.path.join('..', 'venv', 'poppler-0.68.0', 'bin'), dpi=1000)
 
         self.image = cv2.UMat(np.asarray(pdf_image.pop()))
         self.image = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
@@ -155,7 +156,7 @@ class ManageQrCode:
 
         image_pil = Image.fromarray(self.image.get())
         image_pil = image_pil.rotate(degree % 360)
-        image_pil.save(image_threshold_path)
+        # image_pil.save(image_threshold_path)
 
         self.image = np.asarray(image_pil)
 
