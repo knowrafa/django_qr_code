@@ -26,10 +26,10 @@ class ManageQrCode:
     sides = ['left', 'half', 'right']
     region_to_cut = [8]
 
-
     def __init__(self, pdf_path):
         self.pdf_path = pdf_path
-        self.create_dir()
+        self.images_path = self.pdf_path.split(".pdf")[0]
+        # self.create_dir()
         try:
             self.run()
         except PyPdfError:
@@ -158,39 +158,29 @@ class ManageQrCode:
         qr_code_detector_cv2 = cv2.QRCodeDetector()
         try:
             decoded_text_cv2, points, _ = qr_code_detector_cv2.detectAndDecode(self.image)
-        except:
+        except all:
             decoded_text_cv2 = ""
             pass
         if decoded_text_cv2 != "":
-            print("DECODED-OPENCV: ", decoded_text_cv2)
+            # print("DECODED-OPENCV: ", decoded_text_cv2)
+            pass
 
-        for obj in decoded_objects:
-            (x, y, w, h) = obj.rect
-            shift = 5
-            roi = self.image[y-shift:y+h+shift, x-shift:x+w+shift]
-            file_name = 'qr_code_detected.png'
-            # cv2.rectangle(image, (x, y), (x + w, y + h), (0, 0, 255), 2)
-            qr_code_image_path = os.path.join(self.images_path, file_name)
-            image4save = Image.fromarray(roi)
-            image4save.save(qr_code_image_path)
-
-
-        if len(decoded_text_cv2) != 0 and False:
-            (x, y, w, h) = points
-            shift = 5
-            roi = self.image[y - shift:y + h + shift, x - shift:x + w + shift]
-            file_name = 'qr_code_detected.png'
-            # cv2.rectangle(image, (x, y), (x + w, y + h), (0, 0, 255), 2)
-            qr_code_image_path = os.path.join(self.images_path, file_name)
-            image4save = Image.fromarray(roi)
-            image4save.save(qr_code_image_path)
+        # for obj in decoded_objects:
+        #     (x, y, w, h) = obj.rect
+        #     shift = 5
+        #     roi = self.image[y-shift:y+h+shift, x-shift:x+w+shift]
+        #     file_name = 'qr_code_detected.png'
+        #     # cv2.rectangle(image, (x, y), (x + w, y + h), (0, 0, 255), 2)
+        #     qr_code_image_path = os.path.join(self.images_path, file_name)
+        #     image4save = Image.fromarray(roi)
+        #     image4save.save(qr_code_image_path)
 
         if decoded_objects:
             self.decoded_text = decoded_objects[0].data.decode("utf-8")
-            print("DECODED-ZBAR: " + self.decoded_text)
+            # print("DECODED-ZBAR: " + self.decoded_text)
             return self.decoded_text
         elif len(decoded_text_cv2) != 0:
-            print("---only detected by opencv--")
+            # print("---only detected by opencv--")
             self.decoded_text = decoded_text_cv2
 
             return self.decoded_text
@@ -219,7 +209,6 @@ class ManageQrCode:
                 code.write(self.decoded_text)
 
     def create_dir(self):
-        self.images_path = self.pdf_path.split(".pdf")[0]
         try:
             os.mkdir(self.images_path)
         except:
