@@ -41,14 +41,12 @@ class QrCodeView(APIView):
             qr_code = ManageQrCode(pdf_path=fs.path(name=filename))
             decoded_text = qr_code.get_decoded_text()
             payload = {'uploaded_file_url': uploaded_file_url}
-            # print("Tempo total: " + "{:.2f}".format(qr_code.total_time))
+            print("Tempo total: " + "{:.2f}".format(qr_code.total_time))
             if decoded_text is not None:
                 payload['decoded_text'] = decoded_text
-                # with open(fs.path(name=filename).split('.pdf')[0] + '\\qr_code_detected.png', "rb") as image_file:
-                #     image_data = base64.b64encode(image_file.read()).decode('utf-8')
-                #     payload["image"] = image_data
-            else:
-                payload['decoded_text'] = "Seu QR Code não foi identificado"
+                with open(fs.path(name=filename).split('.pdf')[0] + '\\qr_code_detected.png', "rb") as image_file:
+                    image_data = base64.b64encode(image_file.read()).decode('utf-8')
+                    payload["image"] = image_data
 
             return Response(payload, status=status.HTTP_200_OK)
 
