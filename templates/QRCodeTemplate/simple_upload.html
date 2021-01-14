@@ -52,8 +52,10 @@
       {% if decoded_text is not None %}
       <div class="inner">
           <p>Seu QR Code é: {{decoded_text}}</p>
-          <img src="data:image/png;base64, {{image}}" alt="Red dot" width="200" height="220" />
-      </div>
+          {% if image %}
+          <img src="data:image/png;base64, {{image}}" alt="QR Code" width="200" height="220" />
+          {% endif %}
+        </div>
       {% endif %}
 
       <div class="inner">
