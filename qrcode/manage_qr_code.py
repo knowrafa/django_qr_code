@@ -3,7 +3,7 @@ from pdf2image import convert_from_path, convert_from_bytes
 from django.conf import settings
 import cv2
 import numpy as np
-import os
+import os, io
 from PIL import Image
 import pyzbar.pyzbar as pyzbar
 import timeit
@@ -22,6 +22,7 @@ class ManageQrCode:
     image = None
     half_image = None
     cropped_pdf = None
+    bytes_pdf = None
 
     # 97% DE acurácia com essas configurações
     rotate = [False, True]
@@ -129,17 +130,16 @@ class ManageQrCode:
 
     def save_cropped_pdf(self):
         writer = PdfFileWriter()
+        self.bytes_pdf = io.BytesIO()
         writer.addPage(self.page)
-        cropped_pdf_path = os.path.join(self.images_path, 'cropped_pdf.pdf')
-        with open(cropped_pdf_path, 'wb') as cropped_pdf:
-            writer.write(cropped_pdf)
-        self.cropped_pdf = cropped_pdf_path
+        writer.write(self.bytes_pdf)
+        self.bytes_pdf.seek(0)
 
     def pdf_to_image(self):
         # pdf_image = convert_from_path(self.cropped_pdf, poppler_path=os.path.join(
-        #     '..', 'venv', 'poppler-0.68.0', 'bin'), dpi=1000)
-        pdf_image = convert_from_path(self.cropped_pdf, poppler_path=os.path.join(
-            settings.BASE_DIR, 'venv', 'poppler-0.68.0', 'bin'), dpi=1000)
+        #     settings.BASE_DIR if settings.configured else '..',
+        #     'venv', 'poppler-0.68.0', 'bin'), dpi=1000)
+        pdf_image = convert_from_bytes(self.bytes_pdf.read(), poppler_path=os.path.join('..', 'venv', 'poppler-0.68.0', 'bin'), dpi=1000)
 
         self.image = cv2.UMat(np.asarray(pdf_image.pop()))
         self.image = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
@@ -221,6 +221,9 @@ class ManageQrCode:
             with open(self.images_path + "\\..\\" + "log_failed.txt", "a") as file_fail:
                 log_text_failed = "CAMINHO DO ARQUIVO: " + self.images_path + ".pdf\n"
                 file_fail.write(log_text_failed)
+        else:
+            with open(self.images_path + "\\decoded.txt", "a") as code:
+                code.write(self.decoded_text)
 
     def create_dir(self):
         self.images_path = self.pdf_path.split(".pdf")[0]
@@ -245,7 +248,7 @@ class ManageQrCode:
     def get_images_path(self):
         return self.images_path
 
-'''
+
 # found = 0
 # not_found = 0
 path = ("C:\\Users\\Rafael\\Documents\\PDF_QRCODE\\enviados\\")
@@ -289,7 +292,7 @@ for pdf_file in filtered_files:
 print(f"ACURÁCIA: {found*100/(found+not_found)}")
 with open(path + "\\" + "log.txt", "a") as file:
     file.write(f"ACURÁCIA: {found*100/(found+not_found)}")
-'''
+
 
 '''
 file1 = open("C:\\Users\\Rafael\\Documents\\PDF_QRCODE\\enviados\\log_failed.txt", 'r')
