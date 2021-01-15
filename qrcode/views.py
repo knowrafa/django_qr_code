@@ -12,7 +12,7 @@ from rest_framework.parsers import FileUploadParser
 # For managing qrcode
 from .manage_qr_code import ManageQrCode
 
-import base64
+from  base64 import b64encode, b64decode
 # Create your views here.
 
 
@@ -53,3 +53,24 @@ class QrCodeView(APIView):
             return Response(payload, status=status.HTTP_200_OK)
 
         return Response({}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class QrCodeAPI(APIView):
+    """
+        Recebe um PDF como bytes64 e conver
+    """
+
+    @staticmethod
+    def get(request):
+        qr_code1 = ManageQrCode("media/000512225939.pdf")
+        qr_code2 = ManageQrCode("media/000512230050.pdf")
+        qr_code3 = ManageQrCode("media/000512230050.pdf")
+
+        qr_codes = [{"decoded_text": qr_code1.decoded_text,
+                     "qr_code_image64": qr_code1.qr_code_image64},
+                    {"decoded_text": qr_code2.decoded_text,
+                     "qr_code_image64": qr_code2.qr_code_image64},
+                    {"decoded_text": qr_code3.decoded_text,
+                     "qr_code_image64": qr_code3.qr_code_image64}, ]
+
+        return Response({"QR Codes": qr_codes}, status=status.HTTP_200_OK)

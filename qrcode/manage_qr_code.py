@@ -7,6 +7,7 @@ import logging
 import numpy as np
 from PIL import Image
 import pyzbar.pyzbar as pyzbar
+from base64 import b64encode, b64decode
 
 
 class ManageQrCode:
@@ -19,6 +20,7 @@ class ManageQrCode:
     image = None
     half_image = None
     cropped_bytes_pdf = None
+    qr_code_image64 = None
 
     # 99% DE acurácia com essas configurações
     rotate = [False, True]
@@ -26,7 +28,8 @@ class ManageQrCode:
     sides = ['left', 'half', 'right']
     region_to_cut = [8]
 
-    def __init__(self, pdf_path):
+    def __init__(self, pdf_path=None):
+
         self.pdf_path = pdf_path
         self.images_path = self.pdf_path.split(".pdf")[0]
         # self.create_dir()
@@ -144,7 +147,7 @@ class ManageQrCode:
                 self.image, 127, 255, cv2.THRESH_BINARY)
 
         file_name = 'image_threshold' + f"_{degree}degrees"+ '.png'
-        image_threshold_path = os.path.join(self.images_path, file_name)
+        # image_threshold_path = os.path.join(self.images_path, file_name)
 
         image_pil = Image.fromarray(self.image.get())
         image_pil = image_pil.rotate(degree % 360)
@@ -165,15 +168,21 @@ class ManageQrCode:
             # print("DECODED-OPENCV: ", decoded_text_cv2)
             pass
 
-        # for obj in decoded_objects:
-        #     (x, y, w, h) = obj.rect
-        #     shift = 5
-        #     roi = self.image[y-shift:y+h+shift, x-shift:x+w+shift]
-        #     file_name = 'qr_code_detected.png'
-        #     # cv2.rectangle(image, (x, y), (x + w, y + h), (0, 0, 255), 2)
-        #     qr_code_image_path = os.path.join(self.images_path, file_name)
-        #     image4save = Image.fromarray(roi)
-        #     image4save.save(qr_code_image_path)
+        for obj in decoded_objects:
+            (x, y, w, h) = obj.rect
+            shift = 5
+            roi = self.image[y-shift:y+h+shift, x-shift:x+w+shift]
+            # self.qr_code_image64 = b64encode(roi.tobytes())
+            buff = io.BytesIO()
+            roi_img = Image.fromarray(roi)
+            roi_img.thumbnail([320, 240], Image.ANTIALIAS)
+            roi_img.save(buff, format='PNG')
+            self.qr_code_image64 = b64encode(buff.getvalue())
+            # file_name = 'qr_code_detected.png'
+            # cv2.rectangle(image, (x, y), (x + w, y + h), (0, 0, 255), 2)
+            # qr_code_image_path = os.path.join(self.images_path, file_name)
+            # image4save = Image.fromarray(roi)
+            # image4save.save(qr_code_image_path)
 
         if decoded_objects:
             self.decoded_text = decoded_objects[0].data.decode("utf-8")
