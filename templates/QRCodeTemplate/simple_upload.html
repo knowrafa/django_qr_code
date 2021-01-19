@@ -27,14 +27,8 @@
   <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
     <header class="masthead mb-auto">
       <div class="inner">
-        <h3 class="masthead-brand">QR CODE</h3>
-       
-        <nav class="nav nav-masthead justify-content-center">
-          <a class="nav-link active" href="#">Aba 1</a>
-          <a class="nav-link" href="#">Aba 2</a>
-          <a class="nav-link" href="#">Aba 3</a>
-       
-        </nav>
+        <h3 class="masthead-brand">Qr Code Detector</h3>
+
       </div>
     </header>
 
@@ -42,7 +36,7 @@
       <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <input type="file" name="myfile">
-        <button type="submit">Upload</button>
+        <button type="submit">Detectar QR Code</button>
       </form>
 
       {% if uploaded_file_url %}
