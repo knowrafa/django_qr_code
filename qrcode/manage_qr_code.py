@@ -31,7 +31,6 @@ class ManageQrCode:
     def __init__(self, pdf_path=None):
 
         self.pdf_path = pdf_path
-        self.images_path = self.pdf_path.split(".pdf")[0]
         # self.create_dir()
         try:
             self.run()
