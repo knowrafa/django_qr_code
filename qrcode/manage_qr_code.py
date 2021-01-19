@@ -4,6 +4,7 @@ from django.conf import settings
 import cv2, os, io, timeit
 import logging
 import numpy as np
+from sys import platform
 from PIL import Image
 import pyzbar.pyzbar as pyzbar
 import glob
@@ -128,9 +129,12 @@ class ManageQrCode:
         self.cropped_bytes_pdf = self.cropped_bytes_pdf.read()
 
     def pdf_to_image(self):
-        pdf_image = convert_from_bytes(self.cropped_bytes_pdf,
-                                       poppler_path=os.path.join(settings.BASE_DIR, 'venv', 'poppler-0.68.0', 'bin'),
-                                       dpi=1000)
+        if platform == 'linux' or platform == 'linux2':
+            pdf_image = convert_from_bytes(self.cropped_bytes_pdf, dpi=1000)
+        elif platform == 'win32':
+            pdf_image = convert_from_bytes(self.cropped_bytes_pdf,
+                                           poppler_path=os.path.join(settings.BASE_DIR, 'venv', 'poppler-0.68.0', 'bin'),
+                                           dpi=1000)
         # Rodando só o método
         # pdf_image = convert_from_bytes(self.cropped_bytes_pdf,
         #                               poppler_path=os.path.join('..', 'venv', 'poppler-0.68.0', 'bin'),
