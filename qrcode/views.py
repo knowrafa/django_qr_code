@@ -8,7 +8,6 @@ from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.parsers import FileUploadParser
-
 # For managing qrcode
 from .manage_qr_code import ManageQrCode
 

@@ -127,7 +127,6 @@ class ManageQrCode:
 
     def pdf_to_image(self):
         pdf_image = convert_from_bytes(self.cropped_bytes_pdf,
-                                       poppler_path=os.path.join(settings.BASE_DIR, 'venv', 'poppler-0.68.0', 'bin'),
                                        dpi=1000)
         # Rodando só o método
         # pdf_image = convert_from_bytes(self.cropped_bytes_pdf,
