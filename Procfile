@@ -1,2 +1,2 @@
 Release: python manage.py makemigrations | python manage.py migrate
-web: gunicorn QrCodeProject.wsgi --log-file -
+web: gunicorn QRCodeProject.wsgi --log-file -
