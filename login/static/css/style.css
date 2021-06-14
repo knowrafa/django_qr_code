@@ -1,0 +1,153 @@
+:root {
+  --primary-color: #1890ff;
+  --secondary-color: #722ed1;
+  --primary-color-shade: #e6f7ff;
+  --danger-color: #f5222d;
+  --error-color: #f5222d;
+  --success-color: #52c41a;
+  --warning-color: #ffc53d;
+  --info-color: #597ef7;
+  --background-color: #e6f7ff;
+  --radius: 6px;
+
+  --navigator-size: 120px;
+  --navigator-size-small: 100px;
+  --dashboard-card-size: 60vh;
+  --shadow: 0 0 24px 0 #00000015;
+  --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+}
+
+html, body {
+  height: 100%;
+}
+
+.form-navbar {
+  padding: 10px;
+  margin-right: 10px;
+}
+
+#content {
+  height: calc(100% - 128px);
+  width: 100%;
+  background-color: #d3d3d3;
+  padding: 1px;
+}
+
+.content-inside {
+  padding: 0 20px 20px 20px;
+}
+
+.content-list-empty {
+  margin-top: 10px;
+  border-radius: 10px;
+  background-color: white;
+  padding: 20px;
+}
+
+.content-scrolable {
+  overflow: auto;
+}
+
+.th-500 {
+  min-width: 500px;
+}
+
+.th-300 {
+  min-width: 300px;
+}
+
+.th-200 {
+  min-width: 200px;
+}
+
+.content-filters {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  padding: 10px;
+  background-color: white;
+  width: 100%;
+}
+
+.col-md {
+  margin-bottom: 20px;
+}
+
+.content-pagination {
+  margin-top: 20px;
+}
+
+.content-form {
+  padding: 20px;
+  margin: 20px;
+  background-color: white;
+  border-radius: 20px;
+}
+
+.content-button {
+  margin-top: 20px;
+}
+
+.content-input-card {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px;
+}
+
+.content-title {
+  padding: 10px;
+}
+
+/* footer */
+footer {
+  display: flex;
+  align-items: center;
+  opacity: 0.9;
+  color: #fff;
+  position: relative;
+  padding: 8px;
+  bottom: 0;
+  height: 64px;
+  width: 100%;
+  background-color: #000;
+}
+
+#login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+}
+
+#navigation{
+  height: 64px;
+}
+
+
+.copyright {
+  text-align: center;
+}
+
+.quicklinks {
+  text-align: center;
+}
+
+@media screen and (max-width: 991px) {
+  .form-navbar {
+    margin-top: 10px;
+  }
+}
+
+.button-table {
+  background-color: white;
+  color: black;
+  border: none #106a9d;
+  text-align: center;
+  text-decoration: none;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}

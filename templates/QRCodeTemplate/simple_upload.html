@@ -3,68 +3,70 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-  <title>Leitor de QR Code</title>
+    <title>Leitor de QR Code</title>
 
-  <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/cover/">
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/cover/">
 
-  <!-- Bootstrap core CSS -->
-  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet"
-    id="bootstrap-css">
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <!-- Bootstrap core CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet"
+          id="bootstrap-css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
 
-  <!-- Custom styles for this template -->
-  <link href="{% static "css/home/simple_upload.css" %}" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="{% static "css/home/simple_upload.css" %}" rel="stylesheet">
 </head>
 
 <body class="text-center">
+{% if user.is_authenticated %}
+    <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+        <header class="masthead mb-auto">
+            <div class="inner">
+                <h3 class="masthead-brand">Qr Code Detector</h3>
 
-  <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
-    <header class="masthead mb-auto">
-      <div class="inner">
-        <h3 class="masthead-brand">Qr Code Detector</h3>
+            </div>
+        </header>
 
-      </div>
-    </header>
+        <main role="main" class="inner cover">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" name="myfile">
+                <button type="submit">Detectar QR Code</button>
+            </form>
 
-    <main role="main" class="inner cover">
-      <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <input type="file" name="myfile">
-        <button type="submit">Detectar QR Code</button>
-      </form>
+            {% if uploaded_file_url %}
+                <p>File uploaded at: <a href="{{ uploaded_file_url }}">{{ uploaded_file_url }}</a></p>
+            {% endif %}
 
-      {% if uploaded_file_url %}
-        <p>File uploaded at: <a href="{{ uploaded_file_url }}">{{ uploaded_file_url }}</a></p>
-      {% endif %}
-      
-      {% if decoded_text is not None %}
-      <div class="inner">
-          <p>Seu QR Code é: {{decoded_text}}</p>
-          {% if image %}
-          <img src="data:image/png;base64, {{image}}" alt="QR Code" width="200" height="220" />
-          {% endif %}
-        </div>
-      {% endif %}
+            {% if decoded_text is not None %}
+                <div class="inner">
+                    <p>Seu QR Code é: {{ decoded_text }}</p>
+                    {% if image %}
+                        <img src="data:image/png;base64, {{ image }}" alt="QR Code" width="200" height="220"/>
+                    {% endif %}
+                </div>
+            {% endif %}
 
-      <div class="inner">
-        
-      </div>
-    </main>
+            <div class="inner">
 
-    <footer class="mastfoot mt-auto">
-      <div class="inner">
-        <p>QR Code Reader for <a href="#">omni</a>
-      </div>
-    </footer>
+            </div>
+        </main>
 
-  </div>
+        <footer class="mastfoot mt-auto">
+            <div class="inner">
+                <p>QR Code Reader for <a href="#">omni</a>
+            </div>
+        </footer>
 
+    </div>
+{%  else %}
+    <meta http-equiv="REFRESH" content="0; url={% url 'login:login' %}">
+{% endif %}
 </body>
 
 </html>

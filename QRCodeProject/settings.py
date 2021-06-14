@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'kn86h@88%uvey0twu^h@oysk_r0jhj$)bw#-nahq$35#z95o7a'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'qrcode.apps.QrcodeConfig',
+    'login.apps.LoginConfig',
 ]
 
 MIDDLEWARE = [
@@ -103,10 +104,15 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     # BASE_DIR / "static",
     os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'login', 'static'),
+    os.path.join(BASE_DIR, 'qrcode', 'static')
     # os.path.join(BASE_DIR, 'staticfiles'),
 ]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+LOGIN_REDIRECT_URL = 'qrcode:detect'
+LOGOUT_REDIRECT_URL = 'login:login'
 
 django_heroku.settings(locals())
