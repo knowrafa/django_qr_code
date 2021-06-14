@@ -1,6 +1,8 @@
 import glob
 import os
+from pprint import pprint
 
+from PyPDF2.utils import PyPdfError
 from rest_framework import status
 from rest_framework.parsers import FileUploadParser
 from rest_framework.renderers import TemplateHTMLRenderer
@@ -58,3 +60,22 @@ class QrCodeView(APIView):
             return Response(payload, status=status.HTTP_200_OK)
         return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
+    # def post(self, request):
+    #     # path = 'home/knowrafa/'
+    #     files_pdf = glob.glob('/home/rafael/*.pdf')
+    #     for pdf_path in files_pdf:
+    #         try:
+    #             qr_code = ManageQrCode(pdf_path)
+    #         except Exception as e:
+    #             pprint(e)
+    #         decoded_text = qr_code.get_decoded_text()
+    #         payload = {}
+    #         if decoded_text is not None:
+    #             payload['decoded_text'] = decoded_text
+    #             payload['image'] = qr_code.qr_code_image64.decode('utf-8')
+    #
+    #             print(pdf_path + " - " + decoded_text)
+    #         else:
+    #             print(pdf_path + " - " + "QR Code não identificado")
+    #             payload['decoded_text'] = "Seu QR Code não foi identificado"
+    #     return Response({}, status=status.HTTP_200_OK)

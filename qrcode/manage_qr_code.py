@@ -174,7 +174,11 @@ class ManageQrCode:
             buff = io.BytesIO()
             roi_img = Image.fromarray(roi)
             roi_img.thumbnail([320, 240], Image.ANTIALIAS)
-            roi_img.save(buff, format='PNG')
+            try:
+                roi_img.save(buff, format='PNG')
+            except AttributeError:
+                print("Erro no arquivo: " + self.pdf_path)
+                raise AttributeError
             self.qr_code_image64 = b64encode(buff.getvalue())
         if decoded_objects:
             self.decoded_text = decoded_objects[0].data.decode("utf-8")
