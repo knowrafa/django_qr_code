@@ -104,8 +104,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     # BASE_DIR / "static",
     os.path.join(BASE_DIR, 'static'),
-    os.path.join(BASE_DIR, 'login', 'static'),
-    os.path.join(BASE_DIR, 'qrcode', 'static')
     # os.path.join(BASE_DIR, 'staticfiles'),
 ]
 
