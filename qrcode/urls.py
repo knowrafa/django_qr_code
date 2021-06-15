@@ -3,5 +3,5 @@ from . import views
 
 app_name = 'qrcode'
 urlpatterns = [
-    path('detect/', views.QrCodeView.as_view(), name='detect'),
+    path('', views.QrCodeView.as_view(), name='detect'),
 ]
