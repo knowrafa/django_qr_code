@@ -1,3 +1,4 @@
 zbar-tools
 build-essential
 libzbar-dev
+poppler-utils
