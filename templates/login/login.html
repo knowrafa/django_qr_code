@@ -47,12 +47,12 @@
     {#    </div>#}
 
     <div id="content" class="d-flex flex-column" style="height: 100%">
-        <div class="container px-4" style="height: calc(100% - 80px)">
+        <div class="container-fluid px-4" style="height: calc(100% - 80px)">
             <div class="row align-items-center" style="height: 100%">
-                <div class="col-12 col-sm-12 col-md-6 text-center">
-                    <img alt='' src="{% static 'login/images/favicon.svg' %}" style="height: 50%; width: 50%"/>
+                <div class="col-12 col-sm-12 col-md-6 text-center center">
+                    <img alt='' src="{% static 'login/images/favicon.svg' %}" style="height: 40%; width: 40%"/>
                 </div>
-                <div class="col-12 col-sm-12 col-md-6">
+                <div class="col-12 col-sm-12 offset-md-1 col-md-4">
                     <div>
                         <h3><strong>Login</strong></h3>
                         <p class="mb-4">
@@ -95,22 +95,20 @@
                 </div>
             </div>
         </div>
-        <div class=""
-             style="height: 80px; text-align: center; background-color: #000000; opacity: 0.9;">
-            <div class="row" style="width: 100%;">
-                <div class="col-md-4">
-                    <a>Copyright &copy; iTech Ltda.</a>
+        <div class="container-fluid px-4" style="height: 80px">
+            <div class="row align-items-center" style="height: 100%">
+                <div class="col-12 col-sm-12 col-md-6 text-center">
+                        <a>Copyright &copy; iTech Ltda.</a>
                 </div>
-                <div class="col-md-4"></div>
-                <div class="col-md-4 quicklinks" style="text-align:center;">
-                    <ul class="list-inline">
-                        <li class="list-inline-item">
+                <div class="col-12 col-sm-12 col-md-6">
+                    <div class="col">
+                        <div class="col-12 col-sm-12 col-md-12 text-center">
                             <a href="#">Política de Privacidade</a>
-                        </li>
-                        <li class="list-inline-item">
+                        </div>
+                        <div class="col-12 col-sm-12 col-md-12 text-center">
                             <a href="#">Termos de Uso</a>
-                        </li>
-                    </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
