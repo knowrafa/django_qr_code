@@ -16,10 +16,12 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
+from django.contrib import admin
 
 urlpatterns = [
     path('', include('qrcode.urls')),
-    path('', include('login.urls'))
+    path('', include('login.urls')),
+    path('admin/', admin.site.urls, name="admin"),
 ]
 
 if settings.DEBUG:
