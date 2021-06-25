@@ -10,6 +10,7 @@ from rest_framework.views import APIView
 
 class LoginView(APIView):
     template_name = 'login/login.html'
+    permission_classes = []
 
     @staticmethod
     def get(request):

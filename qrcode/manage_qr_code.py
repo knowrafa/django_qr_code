@@ -30,10 +30,10 @@ class ManageQrCode:
     qr_code_image64 = None
 
     # Configurações (podem ser alteradas)
-    rotate = [False, True]
-    degrees = [0, 1, 2, 358, 359]
-    sides = ['left', 'half', 'right']
-    region_to_cut = [8]
+    rotate = [False, True]  # testa as posições tanto de baixo, quanto de cima
+    degrees = [0, 1, 2, 358, 359]  # graus a serem girados
+    sides = ['left', 'half', 'right']  # corta no superior esquerdo, na metade do documento e na direita
+    region_to_cut = [8]  # 8 -> 80%, 6 -> 60%...
 
     def __init__(self, pdf_path=None):
 
@@ -104,7 +104,7 @@ class ManageQrCode:
                 page.mediaBox.upperRight = (page.mediaBox.getUpperRight_x(
                 ), page.mediaBox.getUpperRight_y())
                 page.mediaBox.lowerLeft = (page.mediaBox.getLowerLeft_x(
-                ), page.mediaBox.getLowerLeft_y()+half_pdf_y)
+                ), page.mediaBox.getLowerLeft_y() + half_pdf_y)
         elif rotate:
             if side == 'right':
                 page.mediaBox.upperRight = (page.mediaBox.getUpperRight_x(
@@ -139,7 +139,7 @@ class ManageQrCode:
     def pdf_to_image(self):
         if platform == 'linux' or platform == 'linux2':
             pdf_image = convert_from_bytes(self.cropped_bytes_pdf, dpi=1000)
-        else: # platform == 'win32':
+        else:  # platform == 'win32':
             pdf_image = convert_from_bytes(self.cropped_bytes_pdf,
                                            poppler_path=os.path.join(settings.BASE_DIR, 'venv', 'poppler-0.68.0',
                                                                      'bin'),
@@ -170,7 +170,7 @@ class ManageQrCode:
         for obj in decoded_objects:
             (x, y, w, h) = obj.rect
             shift = 5
-            roi = self.image[y-shift:y+h+shift, x-shift:x+w+shift]
+            roi = self.image[y - shift:y + h + shift, x - shift:x + w + shift]
             buff = io.BytesIO()
             roi_img = Image.fromarray(roi)
             roi_img.thumbnail([320, 240], Image.ANTIALIAS)

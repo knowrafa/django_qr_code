@@ -7,7 +7,9 @@ colorama==0.4.4
 dj-database-url==0.5.0
 Django==3.1.5
 django-heroku==0.3.1
-djangorestframework==3.12.2
+django-rest-framework-nested==0.0.1
+djangorestframework==3.12.1
+djangorestframework-jwt==1.11.0
 gunicorn==20.0.4
 idna==2.10
 isort==5.7.0
@@ -21,6 +23,7 @@ pdf2image==1.14.0
 Pillow==8.1.0
 psycopg2==2.8.6
 pycodestyle==2.6.0
+PyJWT==1.7.1
 pylint==2.6.0
 pyPdf==1.13
 PyPDF2==1.26.0
